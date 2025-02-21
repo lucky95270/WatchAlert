@@ -146,6 +146,10 @@ func (t *AlertRule) Recover(faultCenterKey string, faultCenterInfoKey string, cu
 			return
 		}
 
+		// 调整为待恢复状态
+		event.Status = 3
+		t.ctx.Redis.Event().PushEventToFaultCenter(&event)
+
 		// 判断是否在等待时间范围内
 		wTime, exists := t.alarmRecoverWaitStore.Get(key)
 		if !exists {
@@ -159,7 +163,8 @@ func (t *AlertRule) Recover(faultCenterKey string, faultCenterInfoKey string, cu
 			continue
 		}
 
-		event.State = "Firing"
+		// 已恢复状态
+		event.Status = 4
 		event.IsRecovered = true
 		event.RecoverTime = curTime
 		event.LastSendTime = 0

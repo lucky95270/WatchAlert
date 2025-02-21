@@ -225,10 +225,6 @@ func (c *Consume) isMutedEvent(event *models.AlertCurEvent, faultCenter models.F
 
 // validateEvent 事件验证
 func (c *Consume) validateEvent(event *models.AlertCurEvent, faultCenter models.FaultCenter) bool {
-	if event.State == "Pending" {
-		return false
-	}
-
 	return event.IsRecovered || event.LastSendTime == 0 ||
 		event.LastEvalTime >= event.LastSendTime+faultCenter.RepeatNoticeInterval*60
 }
