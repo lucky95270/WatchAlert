@@ -108,7 +108,7 @@ func (t *AlertRule) Eval(ctx context.Context, rule models.AlertRule) {
 				// 追加当前数据源的指纹到总列表
 				curFingerprints = append(curFingerprints, fingerprints...)
 			}
-			//logc.Infof(t.ctx.Ctx, fmt.Sprintf("规则评估 -> %v", tools.JsonMarshal(rule)))
+			logc.Infof(t.ctx.Ctx, fmt.Sprintf("规则评估 -> %v", tools.JsonMarshal(rule)))
 			t.Recover(models.BuildCacheEventKey(rule.TenantId, rule.FaultCenterId), models.BuildCacheInfoKey(rule.TenantId, rule.FaultCenterId), curFingerprints)
 			t.GC(rule, curFingerprints)
 
@@ -159,6 +159,7 @@ func (t *AlertRule) Recover(faultCenterKey string, faultCenterInfoKey string, cu
 			continue
 		}
 
+		event.State = "Firing"
 		event.IsRecovered = true
 		event.RecoverTime = curTime
 		event.LastSendTime = 0
